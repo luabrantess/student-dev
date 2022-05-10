@@ -4,7 +4,7 @@ import random
 dir(random)
 
 #criando uma lista com as posições do boneco
-boneco = ['''
+forca = ['''
 
 >>>>>>>>>>Hangman<<<<<<<<<<
 
@@ -76,31 +76,50 @@ class Boneco:
 
     # Método para adivinhar a letra
     def advinhaLetra(self, letra):
-        letra = input.print("Digite uma letra: ")
-            if letra in self.palavra and letra not in self.certa:
-                self.certa.append(letra)
-                print("Tem essa letra: %s", letra)
-            else:
-                print("Não tem essa letra. Perdeu ponto! ")
-
+        if letra in self.palavra and letra not in self.certa:
+            self.certa.append(letra)
+        elif letra not in self.palavra and letra not in self.errada:
+            self.errada.append(letra)
+        else:
+            return False
+        return True
 
     # Método para verificar se o jogo terminou
     def gameover(self):
-        if boneco[7]:
-            ("Fim de jogo")
+       if self.vencedor() or (len(self.errada)==6):
+           return True
+
 
     # Método para verificar se o jogador venceu
-    def venceu(self):
-        if boneco[0-6]:
-            print("Voce ganhou!")
+    def vencedor(self):
+        if '_' not in self.encondeLetra():
+            return True
+        return False
 
     # Método para não mostrar a letra no board
+
     def encondeLetra(self):
-        for l in palavra_aleatoria():
+        ident = " "
+        for letra in self.palavra:
+            if letra not in self.certa:
+                ident = ident + "_"
+            else:
+                ident = ident + letra
+            return ident
 
 
     # Método para checar o status do game e imprimir o board na tela
     def statusJogo(self):
+        print(forca[len(self.errada)])
+        print('\nPalavra: ', self.encondeLetra)
+        print('\nLetras erradas: ', )
+        for letra in self.errada:
+            print(letra)
+        print()
+        print('Letras corretas: ', )
+        for letra in self.certa:
+            print(letra)
+        print()
 
 
 # Função para ler uma palavra de forma aleatória do banco de palavras
@@ -113,22 +132,22 @@ def palavra_aleatoria():
 # Função Main - Execução do Programa
 def main():
     # Objeto
-    game = Boneco(advinhaLetra())
 
-    # Enquanto o jogo não tiver terminado, print do status, solicita uma letra e faz a leitura do caracter
-    # Verifica o status do jogo
+    game = Boneco(palavra_aleatoria())
 
-        # Objeto
-        game = Hangman(rand_word())
+    while not game.gameover():
+        game.statusJogo()
+        letra_digitada = input("\nDigite uma letra")
+        game.advinhaLetra(letra_digitada)
 
-    # De acordo com o status, imprime mensagem na tela para o usuário
-    if game.hangman_won():
+    game.statusJogo()
+
+
+    if game.vencedor():
         print('\nParabéns! Você venceu!!')
     else:
         print('\nGame over! Você perdeu.')
-        print('A palavra era ' + game.word)
-
-    print('\nFoi bom jogar com você! Agora vá estudar!\n')
+        print('A palavra era ', game.palavra)
 
 
 # Executa o programa
